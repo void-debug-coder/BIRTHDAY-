@@ -1,28 +1,39 @@
-// CONFIG - MAY 5TH 2026 BIRTHDAY 💀
+// CONFIG - MR VOID (EZEKIAH MWAMWACHA) BIRTHDAY 💀
 const BIRTHDAY = '2026-05-05T00:00:00'
-const BIRTH_YEAR = 2006 // Turns 20 🎂
-const BOT_NUMBER = '254112843071' // Your WhatsApp
-const GITHUB = 'yourusername' // CHANGE THIS to your GitHub
-const BOT_URL = 'https://your-bot.onrender.com' // CHANGE THIS to your bot URL
+const BIRTH_YEAR = 2006
+const BOT_NUMBER = '254112843071'
+const GITHUB = 'void-debug-coder' // CHANGE THIS
+const BOT_URL = 'https://void-md-4-azom.onrender.com' // YOUR BOT URL 💀
+const FULL_NAME = 'EZEKIAH MWAMWACHA'
 
 // Age calc
-document.getElementById('age').textContent = new Date().getFullYear() - BIRTH_YEAR
+const currentYear = new Date().getFullYear()
+document.getElementById('age').textContent = currentYear - BIRTH_YEAR
 
-// Countdown
+// Countdown + Auto Flip
 const bday = new Date(BIRTHDAY).getTime()
-const updateCountdown = () => {
+let flipped = false
+
+function updateCountdown() {
     const now = new Date().getTime()
     const diff = bday - now
-    if (diff <= 0) {
-        document.getElementById('countdown').innerHTML = '<h2 style="font-size:3rem">🎉 TODAY IS THE DAY 💀🎉</h2>'
+    
+    if (diff <= 0 &&!flipped) {
+        flipped = true
+        document.getElementById('countdown').innerHTML = '<h2 style="font-size:3rem;text-shadow:0 0 20px #0f0">🎉 TODAY IS THE DAY 💀🎉</h2>'
+        document.querySelector('.date').textContent = 'HAPPY BIRTHDAY MR VOID (EZEKIAH MWAMWACHA)!'
         startConfetti()
         autoPlayMusic()
+        document.title = '🎂 HAPPY BIRTHDAY MR VOID 🎂'
         return
     }
-    document.getElementById('days').textContent = String(Math.floor(diff/86400000)).padStart(2,'0')
-    document.getElementById('hours').textContent = String(Math.floor(diff%86400000/3600000)).padStart(2,'0')
-    document.getElementById('mins').textContent = String(Math.floor(diff%3600000/60000)).padStart(2,'0')
-    document.getElementById('secs').textContent = String(Math.floor(diff%60000/1000)).padStart(2,'0')
+    
+    if (diff > 0) {
+        document.getElementById('days').textContent = String(Math.floor(diff/86400000)).padStart(2,'0')
+        document.getElementById('hours').textContent = String(Math.floor(diff%86400000/3600000)).padStart(2,'0')
+        document.getElementById('mins').textContent = String(Math.floor(diff%3600000/60000)).padStart(2,'0')
+        document.getElementById('secs').textContent = String(Math.floor(diff%60000/1000)).padStart(2,'0')
+    }
 }
 setInterval(updateCountdown, 1000)
 updateCountdown()
@@ -33,7 +44,7 @@ let musicOn = false
 function toggleMusic() {
     musicOn =!musicOn
     if(musicOn) {
-        music.play()
+        music.play().catch(e => console.log('Music blocked:', e))
         document.querySelector('.music-toggle').textContent = '🔊'
     } else {
         music.pause()
@@ -41,26 +52,26 @@ function toggleMusic() {
     }
 }
 function autoPlayMusic() {
-    if(new Date().toISOString().slice(5,10) === '05-05') {
-        music.play().catch(()=>{})
-        musicOn = true
-        document.querySelector('.music-toggle').textContent = '🔊'
-    }
+    music.play().catch(()=>{})
+    musicOn = true
+    document.querySelector('.music-toggle').textContent = '🔊'
 }
 
 // Confetti
 function startConfetti() {
+    const confettiContainer = document.getElementById('confetti')
     setInterval(() => {
-        for(let i=0;i<5;i++){
+        for(let i=0;i<3;i++){
             const c = document.createElement('div')
             c.className = 'confetti'
             c.style.left = Math.random()*100+'vw'
             c.style.background = ['#0f0','#f00','#0ff','#ff0','#f0f'][Math.floor(Math.random()*5)]
             c.style.animationDuration = (Math.random()*2+2)+'s'
-            document.body.appendChild(c)
-            setTimeout(()=>c.remove(),3000)
+            c.style.width = c.style.height = (Math.random()*8+5)+'px'
+            confettiContainer.appendChild(c)
+            setTimeout(()=>c.remove(),4000)
         }
-    }, 200)
+    }, 300)
 }
 
 // Wishes counter
@@ -72,36 +83,16 @@ function dropWish() {
     document.getElementById('wishCount').textContent = `WISHES: ${wishes}`
     startConfetti()
     if(!musicOn) toggleMusic()
-    setTimeout(()=>alert('Wish sent to the void 💀🎂'),100)
 }
-
-// Profile pic upload
-document.getElementById('picUpload').addEventListener('change', function(e) {
-    const file = e.target.files[0]
-    if(!file) return
-    const reader = new FileReader()
-    reader.onload = function(event) {
-        const imgData = event.target.result
-        localStorage.setItem('voidProfilePic', imgData)
-        document.getElementById('picPreview').innerHTML = `<img src="${imgData}">`
-        startConfetti()
-        alert('Pic saved to the void 💀')
-    }
-    reader.readAsDataURL(file)
-})
-
-// Load saved pic on page load
-window.addEventListener('load', () => {
-    const savedPic = localStorage.getItem('voidProfilePic')
-    if(savedPic) {
-        document.getElementById('picPreview').innerHTML = `<img src="${savedPic}">`
-    }
-})
 
 // Guestbook
 let guestbook = JSON.parse(localStorage.getItem('voidGuestbook') || '[]')
 function loadWishes() {
     const list = document.getElementById('wishesList')
+    if(guestbook.length === 0) {
+        list.innerHTML = '<p style="text-align:center;opacity:0.5">No wishes yet. Be the first 💀</p>'
+        return
+    }
     list.innerHTML = guestbook.map(w=>`
         <div class="wish-item">
             <strong>${w.name}</strong>
@@ -114,21 +105,26 @@ function addWish() {
     const name = document.getElementById('guestName').value.trim() || 'Anonymous'
     const msg = document.getElementById('guestMsg').value.trim()
     if(!msg) return alert('Write a message first 💀')
-    const wish = {name: name, msg: msg, time: new Date().toLocaleString()}
+    const wish = {
+        name: name.substring(0,20), 
+        msg: msg.substring(0,100), 
+        time: new Date().toLocaleString()
+    }
     guestbook.push(wish)
     localStorage.setItem('voidGuestbook', JSON.stringify(guestbook))
     document.getElementById('guestName').value = ''
     document.getElementById('guestMsg').value = ''
     loadWishes()
     startConfetti()
+    dropWish()
 }
 loadWishes()
 
 // WhatsApp share
 function shareWhatsApp() {
     const url = window.location.href
-    const age = new Date().getFullYear() - BIRTH_YEAR
-    const text = `🎂💀 MR VOID TURNS ${age} TODAY 💀🎂%0A%0ACheck out his birthday site:%0A${url}%0A%0ADrop a wish for the GOAT 🔥`
+    const age = currentYear - BIRTH_YEAR
+    const text = `🎂💀 MR VOID (EZEKIAH MWAMWACHA) TURNS ${age} 💀🎂%0A%0AMay 5th 2026%0A%0ACheck out his birthday site:%0A${url}%0A%0ADrop a wish for the GOAT 🔥`
     window.open(`https://wa.me/?text=${text}`, '_blank')
     startConfetti()
 }
@@ -143,4 +139,11 @@ fetch(BOT_URL).then(r=>{
 })
 
 // Update GitHub link
-document.querySelector('.links a[href*="github"]').href = `https://github.com/${GITHUB}`
+document.getElementById('githubLink').href = `https://github.com/${GITHUB}`
+
+// Auto-check if today is birthday on load
+if(new Date().toISOString().slice(5,10) === '05-05') {
+    flipped = true
+    document.getElementById('countdown').innerHTML = '<h2 style="font-size:3rem">🎉 TODAY IS THE DAY 💀🎉</h2>'
+    startConfetti()
+}
