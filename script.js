@@ -3,8 +3,21 @@ const BIRTHDAY = '2026-05-05T00:00:00'
 const BIRTH_YEAR = 2006
 const BOT_NUMBER = '254112843071'
 const GITHUB = 'void-debug-coder' // CHANGE THIS TO YOUR GITHUB USERNAME
-const BOT_URL = 'https://void-md-4-azom.onrender.com'
-const FULL_NAME = 'EZEKIAH MWAMWACHA'
+
+// YOUR FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyA3ubu0toy8_Ot4aiVrBI4QM3WBbpn5Bjs",
+  authDomain: "void-birthday.firebaseapp.com",
+  databaseURL: "https://void-birthday-default-rtdb.firebaseio.com",
+  projectId: "void-birthday",
+  storageBucket: "void-birthday.firebasestorage.app",
+  messagingSenderId: "45651869948",
+  appId: "1:45651869948:web:f7428bf4f0dad35f4e9779"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
 // Age calc
 const currentYear = new Date().getFullYear()
@@ -74,51 +87,57 @@ function startConfetti() {
     }, 300)
 }
 
-// Wishes counter
-let wishes = parseInt(localStorage.getItem('voidWishes') || 0)
-document.getElementById('wishCount').textContent = `WISHES: ${wishes}`
+// GLOBAL WISHES COUNTER
+db.ref('wishCount').on('value', (snapshot) => {
+    const count = snapshot.val() || 0
+    document.getElementById('wishCount').textContent = `WISHES: ${count}`
+})
+
 function dropWish() {
-    wishes++
-    localStorage.setItem('voidWishes', wishes)
-    document.getElementById('wishCount').textContent = `WISHES: ${wishes}`
+    db.ref('wishCount').transaction((current) => {
+        return (current || 0) + 1
+    })
     startConfetti()
     if(!musicOn) toggleMusic()
 }
 
-// Guestbook
-let guestbook = JSON.parse(localStorage.getItem('voidGuestbook') || '[]')
-function loadWishes() {
+// GLOBAL GUESTBOOK
+function addWish() {
+    const name = document.getElementById('guestName').value.trim() || 'Anonymous'
+    const msg = document.getElementById('guestMsg').value.trim()
+    if(!msg) return alert('Write a message first 💀')
+    
+    const wish = {
+        name: name.substring(0,20), 
+        msg: msg.substring(0,100), 
+        time: new Date().toLocaleString(),
+        timestamp: Date.now()
+    }
+    
+    db.ref('guestbook').push(wish)
+    document.getElementById('guestName').value = ''
+    document.getElementById('guestMsg').value = ''
+    dropWish()
+}
+
+// Load wishes realtime - shows ALL wishes from ALL people
+db.ref('guestbook').orderByChild('timestamp').on('value', (snapshot) => {
     const list = document.getElementById('wishesList')
-    if(guestbook.length === 0) {
+    const data = snapshot.val()
+    if(!data) {
         list.innerHTML = '<p style="text-align:center;opacity:0.5">No wishes yet. Be the first 💀</p>'
         return
     }
-    list.innerHTML = guestbook.map(w=>`
+    
+    const wishes = Object.values(data).sort((a,b) => b.timestamp - a.timestamp)
+    list.innerHTML = wishes.map(w=>`
         <div class="wish-item">
             <strong>${w.name}</strong>
             ${w.msg}
             <span>${w.time}</span>
         </div>
-    `).reverse().join('')
-}
-function addWish() {
-    const name = document.getElementById('guestName').value.trim() || 'Anonymous'
-    const msg = document.getElementById('guestMsg').value.trim()
-    if(!msg) return alert('Write a message first 💀')
-    const wish = {
-        name: name.substring(0,20), 
-        msg: msg.substring(0,100), 
-        time: new Date().toLocaleString()
-    }
-    guestbook.push(wish)
-    localStorage.setItem('voidGuestbook', JSON.stringify(guestbook))
-    document.getElementById('guestName').value = ''
-    document.getElementById('guestMsg').value = ''
-    loadWishes()
-    startConfetti()
-    dropWish()
-}
-loadWishes()
+    `).join('')
+})
 
 // WhatsApp share
 function shareWhatsApp() {
@@ -137,4 +156,4 @@ if(new Date().toISOString().slice(5,10) === '05-05') {
     flipped = true
     document.getElementById('countdown').innerHTML = '<h2 style="font-size:3rem">🎉 TODAY IS THE DAY 💀🎉</h2>'
     startConfetti()
-        }
+}
