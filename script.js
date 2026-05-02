@@ -137,4 +137,4 @@ if(new Date().toISOString().slice(5,10) === '05-05') {
     flipped = true
     document.getElementById('countdown').innerHTML = '<h2 style="font-size:3rem">🎉 TODAY IS THE DAY 💀🎉</h2>'
     startConfetti()
-}
+        }
