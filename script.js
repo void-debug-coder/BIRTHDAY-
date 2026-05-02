@@ -2,8 +2,8 @@
 const BIRTHDAY = '2026-05-05T00:00:00'
 const BIRTH_YEAR = 2006
 const BOT_NUMBER = '254112843071'
-const GITHUB = 'void-debug-coder' // CHANGE THIS
-const BOT_URL = 'https://void-md-4-azom.onrender.com' // YOUR BOT URL 💀
+const GITHUB = 'void-debug-coder' // CHANGE THIS TO YOUR GITHUB USERNAME
+const BOT_URL = 'https://void-md-4-azom.onrender.com'
 const FULL_NAME = 'EZEKIAH MWAMWACHA'
 
 // Age calc
@@ -128,15 +128,6 @@ function shareWhatsApp() {
     window.open(`https://wa.me/?text=${text}`, '_blank')
     startConfetti()
 }
-
-// Bot status check
-fetch(BOT_URL).then(r=>{
-    document.querySelector('#status span').textContent = 'ONLINE 💀'
-    document.querySelector('#status span').style.color = '#0f0'
-}).catch(()=>{
-    document.querySelector('#status span').textContent = 'OFFLINE'
-    document.querySelector('#status span').style.color = '#f00'
-})
 
 // Update GitHub link
 document.getElementById('githubLink').href = `https://github.com/${GITHUB}`
