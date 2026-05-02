@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>VOID-MD B-DAY 💀</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <audio id="bgMusic" loop>
+        <source src="https://files.catbox.moe/8q9k3p.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="music-toggle" onclick="toggleMusic()">🔇</div>
+    <div class="stars"></div>
+
+    <div class="container">
+        <h1 class="glitch" data-text="MR VOID">MR VOID</h1>
+        <div class="cake">🎂</div>
+        <h2 class="age">TURNS <span id="age">??</span></h2>
+        <h3 class="date">MAY 5TH 2026</h3>
+
+        <div class="countdown" id="countdown">
+            <div><span id="days">00</span><label>DAYS</label></div>
+            <div><span id="hours">00</span><label>HOURS</label></div>
+            <div><span id="mins">00</span><label>MINS</label></div>
+            <div><span id="secs">00</span><label>SECS</label></div>
+        </div>
+
+        <div class="info">
+            <p>🤖 VOID-MD CREATOR</p>
+            <p>💀 WhatsApp Bot Dev</p>
+            <p id="status">BOT STATUS: <span>CHECKING...</span></p>
+        </div>
+
+        <button class="wish-btn" onclick="dropWish()">DROP A WISH 💀</button>
+        <div id="wishCount">WISHES: 0</div>
+
+        <div class="profile-section">
+            <h3>DROP YOUR PIC 💀</h3>
+            <input type="file" id="picUpload" accept="image/*" hidden>
+            <div class="pic-preview" id="picPreview" onclick="document.getElementById('picUpload').click()">
+                <span>📷 CLICK TO UPLOAD</span>
+            </div>
+        </div>
+
+        <div class="guestbook">
+            <h3>GUESTBOOK 💀</h3>
+            <input type="text" id="guestName" placeholder="Your name" maxlength="20">
+            <textarea id="guestMsg" placeholder="Drop your birthday wish..." maxlength="100"></textarea>
+            <button onclick="addWish()">SIGN GUESTBOOK</button>
+            <div id="wishesList"></div>
+        </div>
+
+        <div class="links">
+            <a href="#" onclick="shareWhatsApp()" class="share-btn">📱 SHARE ON WHATSAPP</a>
+            <a href="https://wa.me/254112843071?text=Happy%20Birthday%20Mr%20Void%20💀🎂" target="_blank">WhatsApp Me</a>
+            <a href="https://github.com/yourusername" target="_blank">GitHub</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
