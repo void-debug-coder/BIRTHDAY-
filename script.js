@@ -2,7 +2,7 @@
 const BIRTHDAY = '2026-05-05T00:00:00'
 const BIRTH_YEAR = 2006
 const BOT_NUMBER = '254112843071'
-const GITHUB = 'void-debug-coder' // CHANGE THIS TO YOUR GITHUB USERNAME
+const GITHUB = 'yourusername' // CHANGE THIS TO YOUR GITHUB USERNAME
 
 // YOUR FIREBASE CONFIG
 const firebaseConfig = {
@@ -23,7 +23,7 @@ const db = firebase.database();
 const currentYear = new Date().getFullYear()
 document.getElementById('age').textContent = currentYear - BIRTH_YEAR
 
-// Countdown + Auto Flip
+// Countdown + Auto Flip + After Birthday
 const bday = new Date(BIRTHDAY).getTime()
 let flipped = false
 
@@ -31,7 +31,8 @@ function updateCountdown() {
     const now = new Date().getTime()
     const diff = bday - now
     
-    if (diff <= 0 &&!flipped) {
+    // Birthday day only - May 5th 2026
+    if (diff <= 0 && diff > -86400000 && !flipped) {
         flipped = true
         document.getElementById('countdown').innerHTML = '<h2 style="font-size:3rem;text-shadow:0 0 20px #0f0">🎉 TODAY IS THE DAY 💀🎉</h2>'
         document.querySelector('.date').textContent = 'HAPPY BIRTHDAY MR VOID (EZEKIAH MWAMWACHA)!'
@@ -41,6 +42,16 @@ function updateCountdown() {
         return
     }
     
+    // After May 6th - show "Birthday was X days ago"
+    if (diff <= -86400000) {
+        const daysAgo = Math.floor(Math.abs(diff)/86400000)
+        document.getElementById('countdown').innerHTML = `<h2 style="font-size:2rem">VOID TURNED 20<br>${daysAgo} DAYS AGO 💀</h2>`
+        document.querySelector('.date').textContent = 'THANKS FOR THE WISHES!'
+        document.title = 'MR VOID TURNED 20 💀'
+        return
+    }
+    
+    // Before birthday - normal countdown
     if (diff > 0) {
         document.getElementById('days').textContent = String(Math.floor(diff/86400000)).padStart(2,'0')
         document.getElementById('hours').textContent = String(Math.floor(diff%86400000/3600000)).padStart(2,'0')
@@ -150,10 +161,3 @@ function shareWhatsApp() {
 
 // Update GitHub link
 document.getElementById('githubLink').href = `https://github.com/${GITHUB}`
-
-// Auto-check if today is birthday on load
-if(new Date().toISOString().slice(5,10) === '05-05') {
-    flipped = true
-    document.getElementById('countdown').innerHTML = '<h2 style="font-size:3rem">🎉 TODAY IS THE DAY 💀🎉</h2>'
-    startConfetti()
-}
