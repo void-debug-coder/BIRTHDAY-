@@ -2,7 +2,7 @@
 const BIRTHDAY = '2026-05-05T00:00:00'
 const BIRTH_YEAR = 2006
 const BOT_NUMBER = '254112843071'
-const GITHUB = 'yourusername' // CHANGE THIS TO YOUR GITHUB USERNAME
+const GITHUB = 'void-debug-coder' // CHANGE THIS TO YOUR GITHUB USERNAME
 
 // YOUR FIREBASE CONFIG
 const firebaseConfig = {
